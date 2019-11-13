@@ -1,31 +1,30 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Api from './Api.js';
 
 class UserDetails extends React.Component {
+
     constructor(props) {
         super(props);
-        this.state = {name: '', email: '', phone: ''}
+        this.state = {user: {}, expanded: false};
     }
 
     render() {
         return (
-            <div>
-                <h1>{this.state.name}</h1>
-                <h1>{this.state.email}</h1>
-                <h1>{this.state.phone}</h1>
+            <div className="user-details">
+                <p className="float-left">Welcome
+                    <strong> {this.state.user.name}</strong>
+                    { this.state.user.company ? ' (' + this.state.user.company + ')' : ''}
+                </p>
+                <button className="logout-button" onClick={e => Api.logout()}>Log Out</button>
             </div>
-        )
+        );
     }
 
     componentDidMount() {
-        Api.axios().get("/services")
-            .then(res => {
-                this.setState({services: res.data, loading: false, error: false});
-            })
-            .catch(err => {
-                console.log(err);
-                this.setState({services: [], loading: false, error: true})
-            });
+        Api.onUserLoaded((user) => {
+            this.setState({user: user})
+        });
     }
 }
+
+export default UserDetails;

@@ -4,28 +4,32 @@ import Api from './Api.js';
 class ServiceList extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { services: [], loading: true, error: false }
+        this.state = {services: [], loading: true, error: false}
     }
+
     render() {
-        if ( this.state.loading ) {
-            return <p>(fetching services)</p>
-        } else if ( this.state.error ) {
-            return <p>(!error fetching services!)</p>
-        } else {
-            let services = []
+        let services = [];
+        if (this.state.services) {
+
             this.state.services.forEach((service, i) => {
-                services.push(<Service key={i} data={service}/>);
+                services.push(<Service key={i} service={service}/>);
             });
-            return <ul>{services}</ul>
         }
+        return (
+            <div className="service-list">
+                <div className="service-header">Services</div>
+                {services}
+                <button>Create Service</button>
+            </div>
+        )
     }
+
     componentDidMount() {
-        Api.axios().get("/services")
+        Api.connection().get("/services")
             .then(res => {
                 this.setState({services: res.data, loading: false, error: false});
             })
             .catch(err => {
-                console.log(err);
                 this.setState({services: [], loading: false, error: true})
             });
     }
@@ -34,13 +38,16 @@ class ServiceList extends React.Component {
 class Service extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { data: props.data };
+        this.state = {service: props.service};
     }
+
     render() {
-        return <li key={this.state.data.id} onClick={this.alertDescription}><button>{this.state.data.name}</button></li>
-    }
-    alertDescription = () => {
-        window.alert(this.state.data.description)
+        return (
+            <div key={this.state.service.id} className="service-block">
+                {this.state.service.name}
+                <input type="checkbox"/>
+            </div>
+        )
     }
 }
 
