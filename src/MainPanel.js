@@ -7,6 +7,7 @@ import EditUserDetails from './EditUserDetails.js';
 import ServiceConfiguration from './ServiceConfiguration.js';
 
 class MainPanel extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -45,7 +46,7 @@ class MainPanel extends React.Component {
     }
 
     makeTabSelector(tab, label) {
-        let className = 'tab ' + (tab == this.state.currentTab ? 'active-tab' : '');
+        let className = 'tab ' + (tab === this.state.currentTab ? 'active-tab' : '');
         return <div className={className} key={label} onClick={e => this.showTab(e, tab)}>{label}</div>
     }
 
@@ -60,7 +61,7 @@ class MainPanel extends React.Component {
     componentDidMount() {
         Api.onUserLoaded((user) => {
             let currentTab = Util.getQueryParam('tab');
-            if ( currentTab == '' ) {
+            if ( currentTab === '' ) {
                 currentTab = 'userDetails';
                 if (user.is_customer) currentTab = 'customerDashboard';
                 if (user.is_provider) currentTab = 'providerDashboard';

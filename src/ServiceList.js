@@ -1,27 +1,18 @@
 import React from 'react';
-import Api from './Api.js';
 
 class ServiceList extends React.Component {
+
     constructor(props) {
         super(props);
-        this.state = {services: [], loading: true, error: false}
-        Api.connection().get("/services")
-            .then(res => {
-                this.setState({services: res.data, loading: false, error: false});
-            })
-            .catch(err => {
-                this.setState({services: [], loading: false, error: true})
-            });
+        this.state = {services: props.services};
+        this.onSelect = props.onSelect;
     }
 
     render() {
         let services = [];
-        if (this.state.services) {
-
-            this.state.services.forEach((service, i) => {
-                services.push(<Service key={i} service={service}/>);
-            });
-        }
+        this.state.services.forEach((service, i) => {
+            services.push(<Service key={i} service={service} onSelect={this.onSelect}/>);
+        });
         return (
             <div className="service-list">
                 <div className="service-header">Services</div>
@@ -31,24 +22,32 @@ class ServiceList extends React.Component {
         )
     }
 
-    componentDidMount() {
-    }
 }
 
 class Service extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {service: props.service};
+        this.onSelect = props.onSelect;
     }
 
     render() {
         return (
-            <div key={this.state.service.id} className="service-block">
+            <div key={this.state.service.id}
+                 className="service-block"
+                 style={{backgroundColor: this.state.service.color}}
+            >
                 {this.state.service.name}
-                <input type="checkbox"/>
+                <input type="checkbox" onChange={(e) => this.handleSelect(e, this.state.service.id)}/>
             </div>
         )
     }
+
+    handleSelect(e,id) {
+        this.onSelect.call(this, e.target.checked, id);
+    }
+
 }
 
 export default ServiceList;

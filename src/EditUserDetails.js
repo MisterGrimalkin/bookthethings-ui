@@ -1,5 +1,5 @@
 import React from 'react';
-import Api from './Api.js';
+// import Api from './Api.js';
 
 class EditUserDetails extends React.Component {
     render() {

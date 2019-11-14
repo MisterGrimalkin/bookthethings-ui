@@ -1,23 +1,41 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import Api from './Api.js';
 
 class ServiceTimetable extends React.Component {
+
     constructor(props) {
         super(props);
-        this.rows = [];
         this.positions = {};
+        this.state = {
+            services: props.services,
+            displayedServices: props.displayedServices
+        };
     }
 
     render() {
+        let rows = [];
         for (var i = 0; i < 24; i++) {
-            this.rows.push(this.createRow(i));
+            rows.push(this.createRow(i));
         }
+        let rateBlocks = [];
+        this.state.services.forEach((service) => {
+            let display = this.state.displayedServices.includes(service.id);
+            service.rates.forEach((rate) => {
+                rateBlocks.push(<div
+                    id={"s"+service.id+"r"+rate.id}
+                    key={"s"+service.id+"r"+rate.id}
+                    style={{backgroundColor: service.color, display: (display ? 'block' : 'none')}}
+                    className="rate-block"
+                    onClick={e => window.alert(service.description) }
+                >
+                    <strong>&pound;{this.calculateHourlyRate(rate)}/hr</strong>
+                </div>)
+            });
+        });
         return (
-            <div id="timetable" ref={ el => {
-                this.storePos("timetable", el)
-            }}
-                 className="service-timetable">
+            <div id="timetable"
+                 ref={el=>{this.storePos("timetable", el)}}
+                 className="service-timetable"
+            >
                 <table cellSpacing={0}>
                     <thead>
                     <tr>
@@ -32,17 +50,17 @@ class ServiceTimetable extends React.Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {this.rows}
+                    {rows}
                     </tbody>
                 </table>
-                <div id="rate" className="rate-block"></div>
+                {rateBlocks}
             </div>
         );
     }
 
     createCol(day, dayName) {
         return (
-            <th ref={el => {
+            <th key={day} ref={el => {
                 this.storePos("day" + day, el)
             }} className="day-col">{dayName}</th>
         )
@@ -50,10 +68,10 @@ class ServiceTimetable extends React.Component {
 
     createRow(hour) {
         return(
-            <tr className="hour-row">
-                <td style={{fontSize: "smaller", textAlign: "right", backgroundColor: "black", color: "white", border: "none"}}
-                ref={el => this.storePos("hour" + hour, el)}
-                >{hour}:00</td>
+            <tr key={hour} className="hour-row">
+                <td style={{border: "none"}} className="hour-label" ref={el => this.storePos("hour" + hour, el)}>
+                    {hour}:00
+                </td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -63,6 +81,12 @@ class ServiceTimetable extends React.Component {
                 <td>&nbsp;</td>
             </tr>
         )
+    }
+
+    calculateHourlyRate(rate) {
+        let costAmount = parseInt(rate.cost_amount);
+        let costUnit = parseInt(rate.cost_per);
+        return parseInt(((costAmount / costUnit) * 60)) / 100;
     }
 
     storePos(key, element) {
@@ -75,21 +99,37 @@ class ServiceTimetable extends React.Component {
             };
         }
     }
-    positionBlock(blockId, day, hour) {
+
+    positionBlock(service, rate) {
+        let blockId = "s"+service.id+"r"+rate.id
         let blockElement = document.getElementById(blockId);
         let timetable = {
             x: this.positions.timetable.x,
             y: this.positions.timetable.y
+        };
+        blockElement.style.left = (timetable.x + this.positions["day" + rate.day].x + 1) + "px";
+        blockElement.style.top = (timetable.y + this.timeToY(rate.start_time)) + "px";
+        blockElement.style.width = (this.positions["day" + rate.day].w - 1) + "px";
+        blockElement.style.height =
+            (this.timeToY(rate.end_time) - this.timeToY(rate.start_time) - 1) + "px";
+        if ( this.state.displayedServices.includes(service.id) ) {
+            blockElement.style.display = "block";
         }
-        blockElement.style.left = (timetable.x + this.positions["day" + day].x) + "px";
-        blockElement.style.top = (timetable.y + this.positions["hour" + hour].y) + "px";
-        blockElement.style.width = this.positions["day" + day].w + "px";
+    }
 
+    timeToY(time) {
+        let hours = parseInt(time.split("T")[1].split(":")[0]);
+        let minutes = parseInt(time.split("T")[1].split(":")[1]);
+        let hourRowPosition = this.positions["hour"+hours];
+        return hourRowPosition.y + (minutes * (hourRowPosition.h / 60.0));
     }
 
     componentDidMount() {
-        console.log(this.positions);
-        this.positionBlock('rate', 3, 18);
+        this.state.services.forEach((service) => {
+            service.rates.forEach((rate) => {
+                this.positionBlock(service, rate);
+            });
+        });
     }
 
 }
