@@ -1,4 +1,3 @@
-// import React from 'react';
 import {bake_cookie, read_cookie, delete_cookie} from 'sfcookies';
 import axios from 'axios';
 
@@ -37,7 +36,9 @@ class Api {
                     callback.call(this, response.data);
                 });
             })
-            .catch(() => Api.logout());
+            .catch((error) => {
+                window.alert(error)
+            });
     }
 
     static login(email, password) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import Api from './Api.js';
 import ServiceList from './ServiceList.js';
-import ServiceTimetable from './ServiceTimetable.js';
+import Timetable from './Timetable.js';
 
 class ServiceConfiguration extends React.Component {
 
@@ -10,6 +10,8 @@ class ServiceConfiguration extends React.Component {
         this.state = {
             services: [],
             displayedServices: [],
+            selectedServiceId: null,
+            selectedRate: null,
             loaded: false
         };
         Api.connection().get("/rates")
@@ -22,23 +24,45 @@ class ServiceConfiguration extends React.Component {
     }
 
     render() {
+        console.log("render" + this.state.selectedServiceId);
         if (this.state.loaded) {
             return (
                 <div>
                     <ServiceList
                         services={this.state.services}
                         onSelect={this.handleSelect}
+                        selectedServiceId={this.state.selectedServiceId}
                     />
-                    <ServiceTimetable
-                        services={this.state.services}
-                        displayedServices={this.state.displayedServices}
+                    <Timetable
+                        data={this.state.services}
+                        activeGroups={this.state.displayedServices}
+                        itemKey = 'rates'
+                        labelMaker = {this.labelMaker}
+                        onItemSelected = {this.onTimetableItemSelect}
+                        onSelectionCleared = {this.onTimetableSelectionCleared}
                     />
                 </div>
             );
         } else {
             return <p>Loading Services....</p>;
         }
+
     }
+
+    labelMaker = (service, rate) => {
+        let costAmount = parseInt(rate.cost_amount);
+        let costUnit = parseInt(rate.cost_per);
+        return <p><strong>&pound;{parseInt(((costAmount / costUnit) * 60)) / 100} / hour</strong></p>;
+    };
+
+    onTimetableItemSelect = (service, rate) => {
+        this.setState({selectedServiceId: service.id});
+    };
+
+    onTimetableSelectionCleared = () => {
+        this.setState({selectedServiceId: null})
+    };
+
 
     handleSelect = (add, serviceId) => {
         let ds = this.state.displayedServices;

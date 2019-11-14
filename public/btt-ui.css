@@ -131,8 +131,8 @@ body {
     float: right;
 }
 
-.service-timetable {
-    width: calc(100% - 250px);
+.timetable {
+    width: calc(100% - 200px);
     border: 1px solid black;
     float: left;
     height: 100%;
@@ -140,12 +140,12 @@ body {
     border-radius: 4px;
 }
 
-.service-timetable th {
+.timetable th {
     background-color: black;
     color: white;
 }
 
-.time-col {
+.hour-col {
     width: 50px;
 }
 
@@ -162,13 +162,16 @@ body {
     color: white;
     border: none;
     vertical-align: top;
+    transform: translate(0, -6px);
+
+
 }
 
 .day-col {
     width: 150px;
 }
 
-.rate-block {
+.timetable-item {
     display: none;
     position: absolute;
     background-color: red;
@@ -182,6 +185,7 @@ body {
     opacity: 0.9;
     text-align: center;
     font-size: small;
+    cursor: pointer;
 }
 /* Utility */
 
