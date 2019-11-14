@@ -5,6 +5,13 @@ class ServiceList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {services: [], loading: true, error: false}
+        Api.connection().get("/services")
+            .then(res => {
+                this.setState({services: res.data, loading: false, error: false});
+            })
+            .catch(err => {
+                this.setState({services: [], loading: false, error: true})
+            });
     }
 
     render() {
@@ -25,13 +32,6 @@ class ServiceList extends React.Component {
     }
 
     componentDidMount() {
-        Api.connection().get("/services")
-            .then(res => {
-                this.setState({services: res.data, loading: false, error: false});
-            })
-            .catch(err => {
-                this.setState({services: [], loading: false, error: true})
-            });
     }
 }
 

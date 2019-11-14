@@ -7,6 +7,10 @@ class Util {
         return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
     };
 
+    static leadingZero(n) {
+        return n > 9 ? ""+n : "0"+n;
+    }
+
 }
 
 export default Util;

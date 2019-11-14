@@ -137,10 +137,22 @@ body {
     float: left;
     height: 100%;
     margin-left: 20px;
+    border-radius: 4px;
+}
+
+.service-timetable th {
+    background-color: black;
+    color: white;
 }
 
 .time-col {
     width: 50px;
+}
+
+.hour-row td {
+    border-bottom: 1px solid grey;
+    border-left: 1px solid grey;
+
 }
 
 .day-col {
@@ -151,6 +163,13 @@ body {
     position: absolute;
     background-color: red;
     border: 1px solid black;
+    left: 100px;
+    top: 100px;
+    width:10px;
+    height: 100px;
+    margin: 0;
+    padding: 0;
+    opacity: 0.8;
 }
 /* Utility */
 
