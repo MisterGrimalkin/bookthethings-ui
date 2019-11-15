@@ -9,17 +9,24 @@ class ServiceList extends React.Component {
             services: props.services,
             selectedServiceId: props.selectedServiceId
         };
-        this.onSelect = props.onSelect;
+        this.onServiceViewChanged = props.onServiceViewChanged;
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        return {
+            services: props.services,
+            selectedServiceId: props.selectedServiceId
+        };
     }
 
     render() {
-        console.log(">>>>"+this.state.selectedServiceId);
         let services = [];
         this.state.services.forEach((service, i) => {
+            let isSelected = service.id===this.state.selectedServiceId;
             services.push(<Service key={i}
                                    service={service}
-                                   isSelected={service.id===this.state.selectedServiceId}
-                                   onSelect={this.onSelect}/>);
+                                   isSelected={isSelected}
+                                   onServiceViewChanged={this.onServiceViewChanged}/>);
         });
         return (
             <div className="service-list">
@@ -40,12 +47,18 @@ class Service extends React.Component {
             service: props.service,
             isSelected: props.isSelected
         };
-        this.onSelect = props.onSelect;
+        this.onServiceViewChanged = props.onServiceViewChanged;
         this.checkBoxCookieName = "service-selected-" + this.state.service.id;
     }
 
+    static getDerivedStateFromProps(props, state) {
+        return {
+            service: props.service,
+            isSelected: props.isSelected
+        };
+    }
+
     render() {
-        console.log("!!!!!" + this.state.isSelected);
         return (
             <div key={this.state.service.id}
                  className="service-block"
@@ -68,7 +81,7 @@ class Service extends React.Component {
         } else {
             delete_cookie(this.checkBoxCookieName);
         }
-        this.onSelect.call(this, e.target.checked, id);
+        this.onServiceViewChanged.call(this, e.target.checked, id);
     }
 
     componentDidMount() {

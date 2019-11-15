@@ -8,17 +8,17 @@ class Timetable extends React.Component {
             data: props.data,
             itemKey: props.itemKey,
             activeGroups: props.activeGroups || [],
-            labelMaker: props.labelMaker || this.defaultLabelMaker,
-            onItemSelected: props.onItemSelected || this.defaultOnItemSelected,
-            onSelectionCleared: props.onSelectionCleared || this.defaultOnSelectionCleared,
             showDays: props.showDays || [1, 2, 3, 4, 5, 6, 0],
             startHour: props.startHour || 0,
             endHour: props.endHour || 23,
             defaultColor: props.defaultColor || 'red'
         };
-        this.timetableId = "timetable-" + Math.round(Math.random() * 1000000);
-        this.elementPositions = {};
         this.dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        this.labelMaker = props.labelMaker || this.defaultLabelMaker;
+        this.onItemSelected = props.onItemSelected || this.defaultOnItemSelected;
+        this.onSelectionCleared = props.onSelectionCleared || this.defaultOnSelectionCleared;
+        this.timetableId = "timetable-" + props.itemKey;
+        this.elementPositions = {};
         this.selectedItem = null;
     }
 
@@ -51,7 +51,7 @@ class Timetable extends React.Component {
                     className="timetable-item"
                     onClick={ev => this.handleSelect(group, item) }
                 >
-                    {this.state.labelMaker.call(this, group, item)}
+                    {this.labelMaker.call(this, group, item)}
                 </div>)
             });
         });
@@ -65,7 +65,7 @@ class Timetable extends React.Component {
                 <table onClick={e => this.clearSelection()} cellSpacing={0}>
                     <thead>
                     <tr>
-                        <th className="hour-col">&nbsp;</th>
+                        <th style={{boxShadow:"none"}}className="hour-col">&nbsp;</th>
                         {columnHeaders}
                     </tr>
                     </thead>
@@ -148,7 +148,7 @@ class Timetable extends React.Component {
             blockElement.style.left =
                 (timetable.x + this.elementPositions["day" + item.day].x + 1) + "px";
             blockElement.style.top =
-                (timetable.y + this.timeToY(item.start_time)) + "px";
+                (timetable.y + this.timeToY(item.start_time) + 1) + "px";
             blockElement.style.width =
                 (this.elementPositions["day" + item.day].w - 1) + "px";
             blockElement.style.height =
@@ -174,22 +174,24 @@ class Timetable extends React.Component {
     handleSelect = (group, item) => {
         this.resetSelectedItemBlock();
         let blockElement = this.getBlockElement(group, item);
-        blockElement.style.border = "1px solid yellow";
+        // blockElement.style.border = "1px solid yellow";
+        // blockElement.style.opacity = 1;
         blockElement.style.color = "yellow";
         this.selectedItem = {group: group, item: item};
-        this.state.onItemSelected.call(this, group, item);
+        this.onItemSelected.call(this, group, item);
     };
 
     clearSelection() {
         this.resetSelectedItemBlock();
         this.selectedItem = null;
-        this.state.onSelectionCleared.call(this);
+        this.onSelectionCleared.call(this);
     }
 
     resetSelectedItemBlock() {
         if (this.selectedItem != null) {
             this.getSelectedBlockElement().style.border = "1px solid black";
             this.getSelectedBlockElement().style.color = "black";
+            // this.getSelectedBlockElement().style.opacity = 0.8;
         }
     }
 

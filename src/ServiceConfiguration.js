@@ -14,24 +14,25 @@ class ServiceConfiguration extends React.Component {
             selectedRate: null,
             loaded: false
         };
-        Api.connection().get("/rates")
+        Api.connection().get("/services/rates")
             .then(res => {
                 this.setState({services: res.data, loaded: true})
             })
             .catch(err => {
                 window.alert(err);
+                console.log(err.response);
             })
     }
 
     render() {
-        console.log("render" + this.state.selectedServiceId);
+        let selectedServiceId = this.state.selectedServiceId;
         if (this.state.loaded) {
             return (
                 <div>
                     <ServiceList
                         services={this.state.services}
-                        onSelect={this.handleSelect}
-                        selectedServiceId={this.state.selectedServiceId}
+                        onServiceViewChanged={this.onServiceViewChanged}
+                        selectedServiceId={selectedServiceId} //{this.state.selectedServiceId}
                     />
                     <Timetable
                         data={this.state.services}
@@ -64,7 +65,7 @@ class ServiceConfiguration extends React.Component {
     };
 
 
-    handleSelect = (add, serviceId) => {
+    onServiceViewChanged = (add, serviceId) => {
         let ds = this.state.displayedServices;
         if (add) {
             ds.push(serviceId);

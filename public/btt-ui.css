@@ -1,4 +1,4 @@
-body {
+html body {
     font-family: sans-serif;
     background-color: rgba(255, 190, 0, 0.23);
 }
@@ -52,15 +52,15 @@ body {
 
 .main-container {
     padding: 10px;
-    width: calc(100% - 20px);
+    width: calc(100% - 30px);
 }
 
 .content-container {
     padding: 20px;
     border: 1px solid black;
     border-top: none;
-    height: calc(100% - 180px);
-    width: calc(100% - 78px);
+    height: calc(100% - 90px);
+    width: calc(100% - 30px);
     position: absolute;
     background-color: white;
     overflow: scroll;
@@ -72,15 +72,17 @@ body {
 /* Navigation Tabs */
 
 .tab-bar {
-    height: 25px;
-    padding-top: 9px;
+    height: 30px;
+    padding-top: 5px;
     padding-bottom: 0;
     border-bottom: 1px solid black;
+    font-size: small;
+    margin-bottom: 0;
 }
 
 .tab {
-    height: 20px;
-    margin: 0 10px 0 0px;
+    height: 30px;
+    margin: 0 10px 0 0;
     padding: 4px 20px 0 20px;
     display: inline-block;
     border: 1px solid black;
@@ -105,6 +107,8 @@ body {
     width: 160px;
     padding: 5px 5px 5px 5px;
     border: 1px solid black;
+    clear: left;
+
 }
 
 .service-header {
@@ -143,10 +147,13 @@ body {
 .timetable th {
     background-color: black;
     color: white;
+    text-align: center;
+    box-shadow: 0 10px 5px rgba(255,255,255,0.3) inset;
 }
 
 .hour-col {
     width: 50px;
+    box-shadow: none;
 }
 
 .hour-row td {
@@ -172,6 +179,7 @@ body {
 }
 
 .timetable-item {
+    color: black;
     display: none;
     position: absolute;
     background-color: red;
@@ -182,10 +190,12 @@ body {
     height: 100px;
     margin: 0;
     padding: 0;
-    opacity: 0.9;
+    /*opacity: 0.8;*/
     text-align: center;
     font-size: small;
     cursor: pointer;
+    border-radius: 3px;
+    box-shadow: 1px 1px black;
 }
 /* Utility */
 
