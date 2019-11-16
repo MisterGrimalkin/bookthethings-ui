@@ -47,7 +47,7 @@ class MainPanel extends React.Component {
     }
 
     makeTabSelector(tab, label) {
-        let className = 'tab ' + (tab === this.state.currentTab ? 'active-tab' : '');
+        let className = 'col-md-2 tab ' + (tab === this.state.currentTab ? 'active-tab' : '');
         return <div className={className} key={label} onClick={e => this.showTab(e, tab)}>{label}</div>
     }
 
