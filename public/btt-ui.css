@@ -54,11 +54,11 @@ html body {
 
 /* Page Layout */
 
-.user-details {
+.top-bar {
     border-bottom: 1px solid black;
-    padding: 5px;
+    padding: 10px 15px 5px 15px;
     display: block;
-    height: 40px;
+    height: 50px;
     width: calc(100% - 10px);
     clear: both;
     /*float: left;*/
@@ -67,14 +67,14 @@ html body {
 
 .main-container {
     padding: 10px;
-    width: calc(100% - 30px);
+    width: calc(100% - 50px);
 }
 
 .content-container {
     padding: 20px;
     border: 1px solid black;
     border-top: none;
-    height: calc(100% - 90px);
+    height: calc(100% - 110px);
     width: calc(100% - 30px);
     position: absolute;
     background-color: white;

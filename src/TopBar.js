@@ -10,7 +10,7 @@ class TopBar extends React.Component {
 
     render() {
         return (
-            <div className="user-details">
+            <div className="top-bar">
                 <p className="float-left">Welcome
                     <strong> {this.state.user.name}</strong>
                     { this.state.user.company ? ' (' + this.state.user.company + ')' : ''}

@@ -5,6 +5,7 @@ import CustomerDashboard from './CustomerDashboard.js';
 import ProviderDashboard from './ProviderDashboard.js';
 import EditUserDetails from './EditUserDetails.js';
 import ServiceConfiguration from './ServiceConfiguration.js';
+import {bake_cookie, read_cookie} from 'sfcookies';
 
 class MainPanel extends React.Component {
 
@@ -54,6 +55,7 @@ class MainPanel extends React.Component {
         if ( event.ctrlKey ) {
             window.open('/?tab='+tab);
         } else {
+            bake_cookie("tab", tab);
             this.setState({currentTab: tab});
         }
     }
@@ -65,6 +67,9 @@ class MainPanel extends React.Component {
                 currentTab = 'userDetails';
                 if (user.is_customer) currentTab = 'customerDashboard';
                 if (user.is_provider) currentTab = 'providerDashboard';
+            }
+            if ( read_cookie("tab").length > 0 ) {
+                currentTab = read_cookie("tab");
             }
             this.setState({isProvider: user.is_provider, isCustomer: user.is_customer, currentTab: currentTab});
         });
