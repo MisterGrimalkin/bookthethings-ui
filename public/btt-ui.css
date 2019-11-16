@@ -1,22 +1,37 @@
 html body {
     font-family: sans-serif;
     background-color: rgba(255, 190, 0, 0.23);
+    font-family: 'Raleway', sans-serif;
 }
 
 /* LOGIN */
 
 .login-form {
-    width: 400px;
-    height: 200px;
+    width: 30%;
     position: absolute;
-    left: calc(50% - 200px);
-    top: calc(50% - 100px);
-    border: 1px solid black;
+    padding: 20px;
+    left: 35%;
+    top: 25%;
+    font-weight:bold;
+    border: 1px solid #717171;
     background-color: white;
     display: inline-block;
-    border-radius: 5px;
+    border-radius: 15px;
     text-align: center;
-    /*text-align: right;*/
+    box-shadow: 0 0 30px rgba(56, 48, 0, 0.7);
+}
+
+.login-form .error {
+    color: red;
+    font-size: small;
+}
+
+.login-form label {
+    text-align: right;
+}
+
+.login-form h3 {
+    margin-bottom: 20px;
 }
 
 .login-label {

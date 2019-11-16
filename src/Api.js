@@ -41,15 +41,15 @@ class Api {
             });
     }
 
-    static login(email, password) {
+    static login(email, password, onError) {
         Api.connection().post("/auth/login", {email: email, password: password})
             .then((response) => {
-                bake_cookie("token", response.data.auth_token)
+                bake_cookie("token", response.data.auth_token);
                 window.location.reload();
             })
             .catch((error) => {
                 console.log(error);
-                window.alert("Login error! Please check your email and password.");
+                onError.call(this, error);
             });
     }
 

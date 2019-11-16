@@ -1,7 +1,7 @@
 import React from 'react';
 import Api from './Api.js';
 
-class UserDetails extends React.Component {
+class TopBar extends React.Component {
 
     constructor(props) {
         super(props);
@@ -15,7 +15,9 @@ class UserDetails extends React.Component {
                     <strong> {this.state.user.name}</strong>
                     { this.state.user.company ? ' (' + this.state.user.company + ')' : ''}
                 </p>
-                <button className="logout-button" onClick={e => Api.logout()}>Log Out</button>
+                <button
+                    className="btn btn-sm btn-danger float-right"
+                    onClick={e => Api.logout()}>Log Out</button>
             </div>
         );
     }
@@ -27,4 +29,4 @@ class UserDetails extends React.Component {
     }
 }
 
-export default UserDetails;
+export default TopBar;
