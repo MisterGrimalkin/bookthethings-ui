@@ -12,8 +12,10 @@ class ServiceConfiguration extends React.Component {
             displayedServices: [],
             selectedServiceId: null,
             selectedRate: null,
-            loaded: false
+            loaded: false,
+            resizeTag: 0
         };
+        // window.addEventListener("resize", this.handleResize);
         Api.connection().get("/services/rates")
             .then(res => {
                 this.setState({services: res.data, loaded: true})
@@ -28,20 +30,25 @@ class ServiceConfiguration extends React.Component {
         let selectedServiceId = this.state.selectedServiceId;
         if (this.state.loaded) {
             return (
-                <div>
-                    <ServiceList
-                        services={this.state.services}
-                        onServiceViewChanged={this.onServiceViewChanged}
-                        selectedServiceId={selectedServiceId} //{this.state.selectedServiceId}
-                    />
-                    <Timetable
-                        data={this.state.services}
-                        activeGroups={this.state.displayedServices}
-                        itemKey = 'rates'
-                        labelMaker = {this.labelMaker}
-                        onItemSelected = {this.onTimetableItemSelect}
-                        onSelectionCleared = {this.onTimetableSelectionCleared}
-                    />
+                <div className="row">
+                    <div className="col-md-2">
+                        <ServiceList
+                            services={this.state.services}
+                            onServiceViewChanged={this.onServiceViewChanged}
+                            selectedServiceId={selectedServiceId} //{this.state.selectedServiceId}
+                        />
+                    </div>
+                    <div className="col-md-10">
+
+                        <Timetable
+                            data={this.state.services}
+                            activeGroups={this.state.displayedServices}
+                            itemKey='rates'
+                            labelMaker={this.labelMaker}
+                            onItemSelected={this.onTimetableItemSelect}
+                            onSelectionCleared={this.onTimetableSelectionCleared}
+                        />
+                    </div>
                 </div>
             );
         } else {

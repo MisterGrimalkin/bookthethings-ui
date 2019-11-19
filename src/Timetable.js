@@ -11,18 +11,28 @@ class Timetable extends React.Component {
             showDays: props.showDays || [1, 2, 3, 4, 5, 6, 0],
             startHour: props.startHour || 0,
             endHour: props.endHour || 23,
-            defaultColor: props.defaultColor || 'red'
+            defaultColor: props.defaultColor || 'red',
+            resizeToggle: false
         };
-        this.dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        this.dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+        // this.dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         this.labelMaker = props.labelMaker || this.defaultLabelMaker;
         this.onItemSelected = props.onItemSelected || this.defaultOnItemSelected;
         this.onSelectionCleared = props.onSelectionCleared || this.defaultOnSelectionCleared;
         this.timetableId = "timetable-" + props.itemKey;
         this.elementPositions = {};
         this.selectedItem = null;
+        window.addEventListener("resize", this.handleResize);
+    }
+
+    handleResize = (e) => {
+        this.setState({resizeToggle: !this.state.resizeToggle});
+        this.positionBlocks();
     }
 
     render() {
+
+        console.log("REDNER");
         // Rows (hours)
         let rows = [];
         for (var i = this.state.startHour; i <= this.state.endHour; i++) {
@@ -119,12 +129,16 @@ class Timetable extends React.Component {
     }
 
     componentDidMount() {
+        this.positionBlocks();
+    }
+
+    positionBlocks= () => {
         this.state.data.forEach((group) => {
             group[this.state.itemKey].forEach((item) => {
                 this.positionItem(group, item);
             });
         });
-    }
+    };
 
     getSelectedBlockElement() {
         if (this.selectedItem == null) {
