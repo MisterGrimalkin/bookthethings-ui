@@ -7,32 +7,37 @@ class ServiceList extends React.Component {
         super(props);
         this.state = {
             services: props.services,
-            selectedServiceId: props.selectedServiceId
+            selectedService: props.selectedService
         };
+        this.onServiceSelected = props.onServiceSelected;
         this.onServiceViewChanged = props.onServiceViewChanged;
     }
 
     static getDerivedStateFromProps(props, state) {
         return {
             services: props.services,
-            selectedServiceId: props.selectedServiceId
+            selectedService: props.selectedService
         };
     }
 
     render() {
         let services = [];
         this.state.services.forEach((service, i) => {
-            let isSelected = service.id===this.state.selectedServiceId;
-            services.push(<Service key={i}
-                                   service={service}
-                                   isSelected={isSelected}
-                                   onServiceViewChanged={this.onServiceViewChanged}/>);
+            let isSelected = this.state.selectedService != null
+                && this.state.selectedService.id === service.id;
+            services.push(
+                <Service key={i}
+                         service={service}
+                         isSelected={isSelected}
+                         onServiceSelected={this.onServiceSelected}
+                         onServiceViewChanged={this.onServiceViewChanged}
+                />
+            );
         });
         return (
             <div className="service-list">
                 <div className="service-header">Services</div>
                 {services}
-                <button>Create Service</button>
             </div>
         )
     }
@@ -47,6 +52,7 @@ class Service extends React.Component {
             service: props.service,
             isSelected: props.isSelected
         };
+        this.onServiceSelected = props.onServiceSelected;
         this.onServiceViewChanged = props.onServiceViewChanged;
         this.checkBoxCookieName = "service-selected-" + this.state.service.id;
     }
@@ -67,15 +73,24 @@ class Service extends React.Component {
                      color: this.state.isSelected ? 'yellow' : 'black'
                  }}
             >
-                {this.state.service.name}
+                <div
+                    onClick={(e) => this.handleClick(e)}
+                >
+                    {this.state.service.name}
+                </div>
                 <input id={"service-selector-" + this.state.service.id}
                        type="checkbox"
-                       onChange={(e) => this.handleSelect(e, this.state.service.id)}/>
+                       onChange={(e) => this.handleCheckBoxChange(e, this.state.service.id)}/>
             </div>
         )
     }
 
-    handleSelect(e, id) {
+    handleClick(e) {
+        this.onServiceSelected.call(this, this.state.service);
+    }
+
+
+    handleCheckBoxChange(e, id) {
         if (e.target.checked) {
             bake_cookie(this.checkBoxCookieName, "yes");
         } else {

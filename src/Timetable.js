@@ -8,6 +8,8 @@ class Timetable extends React.Component {
             data: props.data,
             itemKey: props.itemKey,
             activeGroups: props.activeGroups || [],
+            selectedGroup: props.selectedGroup || null,
+            selectedItem: props.selectedItem || null,
             showDays: props.showDays || [1, 2, 3, 4, 5, 6, 0],
             startHour: props.startHour || 0,
             endHour: props.endHour || 23,
@@ -28,11 +30,9 @@ class Timetable extends React.Component {
     handleResize = (e) => {
         this.setState({resizeToggle: !this.state.resizeToggle});
         this.positionBlocks();
-    }
+    };
 
     render() {
-
-        console.log("REDNER");
         // Rows (hours)
         let rows = [];
         for (var i = this.state.startHour; i <= this.state.endHour; i++) {
@@ -130,6 +130,7 @@ class Timetable extends React.Component {
 
     componentDidMount() {
         this.positionBlocks();
+        this.updateSelection();
     }
 
     positionBlocks= () => {
@@ -138,6 +139,14 @@ class Timetable extends React.Component {
                 this.positionItem(group, item);
             });
         });
+    };
+
+    updateSelection = () => {
+        if ( this.state.selectedGroup != null && this.state.selectedItem != null ) {
+            this.handleSelect(this.state.selectedGroup, this.state.selectedItem);
+        } else {
+            this.clearSelection();
+        }
     };
 
     getSelectedBlockElement() {
@@ -167,6 +176,7 @@ class Timetable extends React.Component {
                 (this.elementPositions["day" + item.day].w - 1) + "px";
             blockElement.style.height =
                 (this.timeToY(item.end_time) - this.timeToY(item.start_time) - 1) + "px";
+            blockElement.style.color = "black";
         }
     }
 
@@ -188,8 +198,7 @@ class Timetable extends React.Component {
     handleSelect = (group, item) => {
         this.resetSelectedItemBlock();
         let blockElement = this.getBlockElement(group, item);
-        // blockElement.style.border = "1px solid yellow";
-        // blockElement.style.opacity = 1;
+        blockElement.style.border = "1px solid yellow";
         blockElement.style.color = "yellow";
         this.selectedItem = {group: group, item: item};
         this.onItemSelected.call(this, group, item);
@@ -203,9 +212,8 @@ class Timetable extends React.Component {
 
     resetSelectedItemBlock() {
         if (this.selectedItem != null) {
-            this.getSelectedBlockElement().style.border = "1px solid black";
             this.getSelectedBlockElement().style.color = "black";
-            // this.getSelectedBlockElement().style.opacity = 0.8;
+            this.getSelectedBlockElement().style.border = "1px solid black";
         }
     }
 

@@ -38,7 +38,7 @@ class Api {
             })
             .catch((error) => {
                 console.log(error.response);
-                if (error.response.status == 422) {
+                if (error.response != null && error.response.status == 422) {
                     Api.logout();
                 } else {
                     window.alert(error)
