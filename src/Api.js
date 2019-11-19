@@ -23,7 +23,7 @@ class Api {
 
     static onUserLoaded(callback) {
         Api.callbacks.push(callback);
-        if ( Api.user != null ) {
+        if (Api.user != null) {
             callback.call(this, Api.user);
         }
     }
@@ -37,7 +37,12 @@ class Api {
                 });
             })
             .catch((error) => {
-                window.alert(error)
+                console.log(error.response);
+                if (error.response.status == 422) {
+                    Api.logout();
+                } else {
+                    window.alert(error)
+                }
             });
     }
 
