@@ -176,6 +176,7 @@ html body {
     background-color: white;
     color: black;
     border: 1px solid black;
+    overflow: hidden;
     /*border-radius: 2px;*/
 }
 
@@ -259,10 +260,11 @@ html body {
 .btt-form {
     position: absolute;
     width: 50%;
-    height: 50%;
+    /*height: 50%;*/
     left: 25%;
-    top: 10%;
-    border: 5px solid green;
+    top: 0;
+    border: 1px solid black;
+    border-radius: 5px;
     background-color: white;
     z-index: 60;
     padding: 20px;
@@ -275,6 +277,10 @@ html body {
 
 .btt-form label {
     text-align: right;
+}
+
+.btt-form button {
+    margin: 3px;
 }
 
 /* Utility */

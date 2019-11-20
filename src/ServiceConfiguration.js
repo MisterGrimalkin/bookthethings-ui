@@ -77,6 +77,7 @@ class ServiceConfiguration extends React.Component {
                     <ServiceForm
                         service={this.state.selectedService}
                         display={this.state.editingService}
+                        onClose={this.onCloseForms}
                     />
                 </div>
             );
@@ -91,7 +92,12 @@ class ServiceConfiguration extends React.Component {
      */
 
     onServiceSelected = (service) => {
-        this.setState({selectedService: service, selectedRate: null});
+        let newState = {selectedService: service, selectedRate: null};
+        if ( this.state.displayedServices.length == 1 ) {
+            newState.displayedServices = [service.id];
+        }
+        console.log(newState);
+        this.setState(newState);
     };
 
     onServiceViewChanged = (add, serviceId) => {
@@ -126,18 +132,31 @@ class ServiceConfiguration extends React.Component {
             Forms
      */
 
+    onCloseForms = () => {
+        this.setState({
+            editingService: false,
+            editingRate: false
+        })
+    };
+
     onNewService = () => {
-        console.log("New Service");
-        this.setState({editingService: true});
+        this.setState({
+            selectedService: null,
+            selectedRate: null,
+            editingService: true
+        });
     };
 
     onEditService = (service) => {
-        console.log("Edit service: " + service.id);
         this.setState({editingService: true});
     };
 
     onRemoveService = (service) => {
-        console.log("Remove service: " + service.id);
+        let response = window.confirm("Remove service '" + service.name + "'?");
+        if ( response ) {
+            Api.connection().post("/services/remove/"+service.id)
+                .catch(Api.alertError);
+        }
     };
 
     onNewRate = (service, rate) => {

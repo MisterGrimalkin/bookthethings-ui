@@ -17,6 +17,11 @@ class Api {
         return Api.axios;
     }
 
+    static alertError(error) {
+        window.alert(error.response.data.message);
+
+    }
+
     static loggedIn() {
         return read_cookie("token").length > 0;
     }

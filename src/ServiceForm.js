@@ -7,8 +7,9 @@ class ServiceForm extends React.Component {
         super(props);
         this.state = {
             display: props.display,
-            service: props.service
+            service: props.service,
         };
+        this.onClose = props.onClose;
         this.data = {};
     }
 
@@ -21,31 +22,26 @@ class ServiceForm extends React.Component {
 
     onSubmit = (ev) => {
         ev.preventDefault();
-        console.log(this.data);
-        if ( this.state.service==null ) {
+        if (this.state.service == null) {
             Api.connection().post("/services", this.data)
-                .then((response)=>{
-                    window.location.reload();
-                })
-                .catch((error)=>{
-                    window.alert(error);
-                });
+                .then(() => window.location.reload())
+                .catch(Api.alertError);
         } else {
-            Api.connection().put("/services/"+this.state.service.id, this.data)
-                .then((response)=>{
-                    window.location.reload();
-                })
-                .catch((error)=>{
-                    window.alert(error);
-                });
+            Api.connection().put("/services/" + this.state.service.id, this.data)
+                .then(() => window.location.reload())
+                .catch(Api.alertError);
         }
+    };
+
+    onCancel = (ev) => {
+        document.getElementById("mask").style.display = "none";
+        this.onClose.call(this);
     };
 
     render() {
         if (!this.state.display) {
             return '';
         }
-        console.log(this.state.service);
         document.getElementById("mask").style.display = "block";
         return (
             <div className="btt-form">
@@ -53,16 +49,27 @@ class ServiceForm extends React.Component {
                 <form onSubmit={this.onSubmit}>
                     {this.createRow("name", "Name")}
                     {this.createRow("description", "Description")}
-                    <button id="login-button" type="submit" className="btn btn-success">
-                        Save
-                    </button>
+                    {this.createDoubleFieldRow("min_length", "max_length", "Length Range (minutes)")}
+                    {this.createRow("booking_resolution", "Length Resolution", "number")}
+                    {this.createRow("color", "Colour")}
+                    <div className="float-right">
+                        <button type="submit"
+                                className="btn btn-success">
+                            {this.state.service == null ? 'Create' : 'Save'}
+                        </button>
+                        <button type="button"
+                                className="btn btn-primary"
+                                onClick={(e)=>this.onCancel(e)}>
+                            Cancel
+                        </button>
+                    </div>
                 </form>
             </div>
         );
     }
 
-    createRow = (name, label) => {
-        if ( this.state.service ) {
+    createRow = (name, label, type = 'text') => {
+        if (this.state.service) {
             this.data[name] = this.state.service[name];
         }
         return (
@@ -71,14 +78,41 @@ class ServiceForm extends React.Component {
                 <div className="col-sm-9">
                     <input id={name}
                            className="form-control"
-                           type="text"
+                           type={type}
                            onChange={(e) => this.data[name] = e.target.value}
-                           value={this.data[name]}
+                           defaultValue={this.data[name]}
                     />
                 </div>
             </div>
         );
+    }
 
+    createDoubleFieldRow = (name1, name2, label, type = "number") => {
+        if (this.state.service) {
+            this.data[name1] = this.state.service[name1];
+            this.data[name2] = this.state.service[name2];
+        }
+        return (
+            <div className="form-group row">
+                <label htmlFor={name1} className="col-sm-3 col-form-label">{label}</label>
+                <div className="col-sm-4">
+                    <input id={name1}
+                           className="form-control"
+                           type={type}
+                           onChange={(e) => this.data[name1] = e.target.value}
+                           defaultValue={this.data[name1]}
+                    />
+                </div>
+                <div className="col-sm-4">
+                    <input id={name2}
+                           className="form-control"
+                           type={type}
+                           onChange={(e) => this.data[name2] = e.target.value}
+                           defaultValue={this.data[name2]}
+                    />
+                </div>
+            </div>
+        );
     }
 
 }
