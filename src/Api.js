@@ -19,7 +19,6 @@ class Api {
 
     static alertError(error) {
         window.alert(error.response.data.message);
-
     }
 
     static loggedIn() {

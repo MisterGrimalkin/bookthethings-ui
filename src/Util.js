@@ -11,6 +11,17 @@ class Util {
         return n > 9 ? ""+n : "0"+n;
     }
 
+    static rateDescription(rate) {
+        let dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+        let startBits = rate.start_time.split("T")[1].split(":");
+        let endBits = rate.end_time.split("T")[1].split(":");
+        return (
+            dayNames[rate.day]
+            + " " + startBits[0] + ":" + startBits[1]
+            + "-" + endBits[0] + ":" + endBits[1]
+        );
+    };
+
 }
 
 export default Util;

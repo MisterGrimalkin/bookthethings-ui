@@ -20,6 +20,7 @@ class Timetable extends React.Component {
         // this.dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         this.labelMaker = props.labelMaker || this.defaultLabelMaker;
         this.onItemSelected = props.onItemSelected || this.defaultOnItemSelected;
+        this.onItemDoubleClicked = props.onItemDoubleClicked || this.defaultOnItemDoubleClicked;
         this.onSelectionCleared = props.onSelectionCleared || this.defaultOnSelectionCleared;
         this.timetableId = "timetable-" + props.itemKey;
         this.elementPositions = {};
@@ -60,6 +61,7 @@ class Timetable extends React.Component {
                     }}
                     className="timetable-item"
                     onClick={ev => this.handleSelect(group, item) }
+                    onDoubleClick={ev => this.handleDoubleClick(group, item)}
                 >
                     {this.labelMaker.call(this, group, item)}
                 </div>)
@@ -204,6 +206,10 @@ class Timetable extends React.Component {
         this.onItemSelected.call(this, group, item);
     };
 
+    handleDoubleClick = (group, item) => {
+        this.onItemDoubleClicked.call(group, item);
+    };
+
     clearSelection() {
         this.resetSelectedItemBlock();
         this.selectedItem = null;
@@ -219,6 +225,10 @@ class Timetable extends React.Component {
 
     defaultOnItemSelected = (group, item) => {
         console.log(group.id + "/" + item.id);
+    };
+
+    defaultOnItemDoubleClicked = (group, item) => {
+        console.log("Double click");
     };
 
     defaultOnSelectionCleared = () => {

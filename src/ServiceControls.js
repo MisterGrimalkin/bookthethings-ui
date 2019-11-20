@@ -1,4 +1,5 @@
 import React from 'react';
+import Util from './Util.js';
 
 class ServiceControls extends React.Component {
 
@@ -14,7 +15,6 @@ class ServiceControls extends React.Component {
         this.onNewRate = props.onNewRate;
         this.onEditRate = props.onEditRate;
         this.onDeleteRate = props.onDeleteRate;
-        this.dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -25,11 +25,10 @@ class ServiceControls extends React.Component {
     }
 
     render() {
-
         let serviceName = 'Service';
         let serviceBackground = 'green';
         let serviceButtons = [];
-        let rateName = 'Rate'
+        let rateName = 'Rate';
         let rateButtons = [];
         serviceButtons.push(
             <button
@@ -71,7 +70,7 @@ class ServiceControls extends React.Component {
                 </button>
             );
             if (this.state.selectedRate != null) {
-                rateName = this.rateDescription(this.state.selectedRate);
+                rateName = Util.rateDescription(this.state.selectedRate);
                 rateButtons.push(
                     <button
                         key="edit-rate"
@@ -85,7 +84,7 @@ class ServiceControls extends React.Component {
                     <button
                         key="delete-rate"
                         className="btn btn-sm btn-danger"
-                        onClick={this.onDeleteRate(this.state.selectedService, this.state.selectedRate)}
+                        onClick={(e) => this.onDeleteRate(this.state.selectedService, this.state.selectedRate)}
                     >
                         Delete
                     </button>
@@ -107,16 +106,6 @@ class ServiceControls extends React.Component {
             </div>
         );
     }
-
-    rateDescription = (rate) => {
-        let startBits = rate.start_time.split("T")[1].split(":");
-        let endBits = rate.end_time.split("T")[1].split(":");
-        return (
-            this.dayNames[rate.day]
-            + " " + startBits[0] + ":" + startBits[1]
-            + "-" + endBits[0] + ":" + endBits[1]
-        );
-    };
 
 }
 

@@ -5,6 +5,7 @@ import ServiceControls from './ServiceControls.js';
 import Timetable from './Timetable.js';
 import ServiceForm from './ServiceForm.js';
 import RateForm from './RateForm.js';
+import Util from './Util.js';
 
 class ServiceConfiguration extends React.Component {
 
@@ -62,7 +63,6 @@ class ServiceConfiguration extends React.Component {
                         />
                     </div>
                     <div className="col-md-10">
-
                         <Timetable
                             data={this.state.services}
                             activeGroups={this.state.displayedServices}
@@ -71,12 +71,19 @@ class ServiceConfiguration extends React.Component {
                             itemKey='rates'
                             labelMaker={this.labelMaker}
                             onItemSelected={this.onTimetableItemSelected}
+                            onItemDoubleClicked={this.onTimetableItemDoubleClicked}
                             onSelectionCleared={this.onTimetableSelectionCleared}
                         />
                     </div>
                     <ServiceForm
-                        service={this.state.selectedService}
+                        model={this.state.selectedService}
                         display={this.state.editingService}
+                        onClose={this.onCloseForms}
+                    />
+                    <RateForm
+                        service={this.state.selectedService}
+                        model={this.state.selectedRate}
+                        display={this.state.editingRate}
                         onClose={this.onCloseForms}
                     />
                 </div>
@@ -84,19 +91,14 @@ class ServiceConfiguration extends React.Component {
         } else {
             return <p>Loading Services....</p>;
         }
-
     }
 
     /*
-            Service List
+     Service List
      */
 
     onServiceSelected = (service) => {
         let newState = {selectedService: service, selectedRate: null};
-        if ( this.state.displayedServices.length == 1 ) {
-            newState.displayedServices = [service.id];
-        }
-        console.log(newState);
         this.setState(newState);
     };
 
@@ -111,11 +113,15 @@ class ServiceConfiguration extends React.Component {
     };
 
     /*
-            Timetable
+     Timetable
      */
 
     onTimetableItemSelected = (service, rate) => {
         this.setState({selectedService: service, selectedRate: rate});
+    };
+
+    onTimetableItemDoubleClicked = (service, rate) => {
+        this.setState({editingRate: true});
     };
 
     onTimetableSelectionCleared = () => {
@@ -129,7 +135,7 @@ class ServiceConfiguration extends React.Component {
     };
 
     /*
-            Forms
+     Forms
      */
 
     onCloseForms = () => {
@@ -153,22 +159,33 @@ class ServiceConfiguration extends React.Component {
 
     onRemoveService = (service) => {
         let response = window.confirm("Remove service '" + service.name + "'?");
-        if ( response ) {
-            Api.connection().post("/services/remove/"+service.id)
+        if (response) {
+            Api.connection().post("/services/remove/" + service.id)
+                .then(()=>window.location.reload())
                 .catch(Api.alertError);
         }
     };
 
-    onNewRate = (service, rate) => {
-        console.log("New Rate for service " + service.id);
+    onNewRate = (service) => {
+        this.setState({
+            selectedRate: null,
+            editingRate: true
+        });
     };
 
     onEditRate = (service, rate) => {
-        console.log("Edit Rate " + rate.id + " on service " + service.id);
+        this.setState({editingRate: true});
     };
 
     onDeleteRate = (service, rate) => {
-        console.log("Delete Rate " + rate.id + " from service " + service.id);
+        let response = window.confirm(
+            "Delete rate '" + Util.rateDescription(rate) + "' for service '" + service.name + "'?"
+        );
+        if (response) {
+            Api.connection().delete("/services/" + service.id + "/rates/" + rate.id)
+                .then(()=>window.location.reload())
+                .catch(Api.alertError);
+        }
     };
 
 }

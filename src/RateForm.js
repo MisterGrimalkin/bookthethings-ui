@@ -1,30 +1,49 @@
 import React from 'react'
+import AbstractForm from "./AbstractForm.js";
 
-class RateForm extends React.Component {
+class RateForm extends AbstractForm {
 
     constructor(props) {
         super(props);
-        this.element = null;
+        this.state = {
+            display: props.display,
+            model: props.model,
+            service: props.service
+        };
     }
 
-    render() {
-        return(
-            <div
-                className="btt-form"
-                ref={(element) => this.element = element}
-            >
-                <h1>Raunchy Rate</h1>
-            </div>
-        );
+    static getDerivedStateFromProps(props, state) {
+        return {
+            display: props.display,
+            model: props.model,
+            service: props.service
+        };
     }
 
-    open(service) {
-        this.element.style.display = "block";
-    }
+    createUrl = () => {
+        return "/services/" + this.state.service.id + "/rates";
+    };
 
-    close() {
-        this.element.style.display = "none";
-    }
+    updateUrl = (model) => {
+        return "/services/" + this.state.service.id + "/rates/" + model.id;
+    };
+
+    newRecordHeader = () => {
+        return "Create Rate for Service '" + this.state.service.name + "'";
+    };
+
+    existingRecordHeader = (model) => {
+        return "Edit Rate for Service '" + this.state.service.name + "'";
+    };
+
+    buildRows = () => {
+        return [
+            this.createDaySelectorRow("day", "Day", true),
+            this.createDoubleFieldRow("start_time", "end_time", "Times", "time"),
+            this.createRow("cost_amount", "Cost Amount (pence)", "number"),
+            this.createRow("cost_per", "Cost Per (minutes)", "number")
+        ];
+    };
 
 }
 
