@@ -25,6 +25,7 @@ class Timetable extends React.Component {
         this.timetableId = "timetable-" + props.itemKey;
         this.elementPositions = {};
         this.selectedItem = null;
+        this.loadedOnce = false;
         window.addEventListener("resize", this.handleResize);
     }
 
@@ -67,6 +68,9 @@ class Timetable extends React.Component {
                 </div>)
             });
         });
+        if ( this.loadedOnce ) {
+            this.positionBlocks();
+        }
         // Build timetable
         return (
             <div id={this.state.timetableId}
@@ -77,7 +81,7 @@ class Timetable extends React.Component {
                 <table onClick={e => this.clearSelection()} cellSpacing={0}>
                     <thead>
                     <tr>
-                        <th style={{boxShadow:"none"}}className="hour-col">&nbsp;</th>
+                        <th style={{boxShadow: "none"}} className="hour-col">&nbsp;</th>
                         {columnHeaders}
                     </tr>
                     </thead>
@@ -104,7 +108,7 @@ class Timetable extends React.Component {
     createRow(hour) {
         let emptyCols = [];
         this.state.showDays.forEach((day, i) => {
-            emptyCols.push(<td key={i}>&nbsp;</td>);
+            emptyCols.push(<td key={i}></td>);
         });
         return (
             <tr key={hour} className="hour-row">
@@ -133,18 +137,48 @@ class Timetable extends React.Component {
     componentDidMount() {
         this.positionBlocks();
         this.updateSelection();
+        this.loadedOnce = true;
     }
 
-    positionBlocks= () => {
+    getGroupsPerDay = () => {
+        let result = new Array(7).fill(0);
         this.state.data.forEach((group) => {
-            group[this.state.itemKey].forEach((item) => {
-                this.positionItem(group, item);
-            });
+            if (this.state.activeGroups.includes(group.id)) {
+                let presentOnDays = new Array(7).fill(false);
+                group[this.state.itemKey].forEach((item) => {
+                    presentOnDays[item.day] = true;
+                });
+                presentOnDays.forEach((val, i) => {
+                    if (val) {
+                        result[i]++;
+                    }
+                });
+            }
+        });
+        return result;
+    };
+
+    positionBlocks = () => {
+        let groupsPerDay = this.getGroupsPerDay();
+        let offsets = new Array(7).fill(0);
+        this.state.data.forEach((group) => {
+            if ( this.state.activeGroups.includes(group.id) ) {
+                let hitDays = new Array(7).fill(false);
+                group[this.state.itemKey].forEach((item) => {
+                    this.positionItem(group, item, offsets[item.day], groupsPerDay[item.day]);
+                    hitDays[item.day] = true;
+                });
+                hitDays.forEach((val, i) => {
+                    if (val) {
+                        offsets[i]++;
+                    }
+                });
+            }
         });
     };
 
     updateSelection = () => {
-        if ( this.state.selectedGroup != null && this.state.selectedItem != null ) {
+        if (this.state.selectedGroup != null && this.state.selectedItem != null) {
             this.handleSelect(this.state.selectedGroup, this.state.selectedItem);
         } else {
             this.clearSelection();
@@ -163,19 +197,20 @@ class Timetable extends React.Component {
         return document.getElementById("g" + group.id + "i" + item.id);
     }
 
-    positionItem(group, item) {
+    positionItem(group, item, leftOffset = 0, widthDivider = 1) {
         if (this.state.showDays.includes(item.day)) {
             let blockElement = this.getBlockElement(group, item);
             let timetable = {
                 x: this.elementPositions.timetable.x,
                 y: this.elementPositions.timetable.y
             };
+            let width = (this.elementPositions["day" + item.day].w - 1) / widthDivider;
             blockElement.style.left =
-                (timetable.x + this.elementPositions["day" + item.day].x + 1) + "px";
+                ((timetable.x + this.elementPositions["day" + item.day].x + 1)
+                + (widthDivider > 1 ? leftOffset * width : 0)) + "px";
             blockElement.style.top =
                 (timetable.y + this.timeToY(item.start_time) + 1) + "px";
-            blockElement.style.width =
-                (this.elementPositions["day" + item.day].w - 1) + "px";
+            blockElement.style.width = width + "px";
             blockElement.style.height =
                 (this.timeToY(item.end_time) - this.timeToY(item.start_time) - 1) + "px";
             blockElement.style.color = "black";

@@ -98,13 +98,18 @@ class ServiceConfiguration extends React.Component {
      */
 
     onServiceSelected = (service) => {
-        let newState = {selectedService: service, selectedRate: null};
-        this.setState(newState);
+        this.setState({selectedService: service, selectedRate: null});
+        if (this.state.displayedServices.length == 1 && this.state.displayedServices[0] != service.id) {
+            this.onServiceViewChanged(false, this.state.displayedServices[0]);
+        }
+        if (this.state.displayedServices.length == 0) {
+            this.onServiceViewChanged(true, service.id);
+        }
     };
 
     onServiceViewChanged = (add, serviceId) => {
         let ds = this.state.displayedServices;
-        if (add) {
+        if (add && !ds.includes(serviceId)) {
             ds.push(serviceId);
         } else {
             ds.splice(ds.indexOf(serviceId), 1);

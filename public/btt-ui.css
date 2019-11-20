@@ -186,6 +186,8 @@ html body {
     float: right;
 }
 
+/* Timetable */
+
 .timetable {
     width: 100%;
     border: 1px solid black;
@@ -206,9 +208,14 @@ html body {
     box-shadow: none;
 }
 
+.timetable tr {
+    height: 20px;
+}
+
 .hour-row td {
     border-bottom: 1px solid grey;
     border-left: 1px solid grey;
+    /*height: 1px;*/
 }
 
 .hour-label {
