@@ -15,6 +15,7 @@ class ServiceControls extends React.Component {
         this.onNewRate = props.onNewRate;
         this.onEditRate = props.onEditRate;
         this.onDeleteRate = props.onDeleteRate;
+        this.onFillRate = props.onFillRate;
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -87,6 +88,15 @@ class ServiceControls extends React.Component {
                         onClick={(e) => this.onDeleteRate(this.state.selectedService, this.state.selectedRate)}
                     >
                         Delete
+                    </button>
+                );
+                rateButtons.push(
+                    <button
+                        key="fill-rate"
+                        className="btn btn-sm btn-warning"
+                        onClick={(e) => this.onFillRate(this.state.selectedService, this.state.selectedRate)}
+                    >
+                        Fill Week
                     </button>
                 );
             }

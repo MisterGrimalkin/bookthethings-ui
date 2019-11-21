@@ -60,6 +60,7 @@ class ServiceConfiguration extends React.Component {
                             onNewRate={this.onNewRate}
                             onEditRate={this.onEditRate}
                             onDeleteRate={this.onDeleteRate}
+                            onFillRate={this.onFillRate}
                         />
                     </div>
                     <div className="col-md-10">
@@ -192,6 +193,17 @@ class ServiceConfiguration extends React.Component {
                 .catch(Api.alertError);
         }
     };
+
+    onFillRate = (service, rate) => {
+        let response = window.confirm(
+            "Fill selected rate to all available days?"
+        );
+        if ( response ) {
+            Api.connection().post("/services/" + service.id + "/rates/" + rate.id + "/fill", {days: [1, 2, 3, 4, 5, 6, 0]})
+                .then(()=>window.location.reload())
+                .catch(Api.alertError);
+        }
+    }
 
 }
 
